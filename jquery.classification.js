@@ -146,7 +146,8 @@
         dynamic: false,
         level: 'U-FOUO',
         dynamicBanner: false,
-        tsOrange: false
+        tsOrange: false,
+        colorBanners: false
     };
 
     /**
@@ -158,9 +159,7 @@
         $(banners).remove();
 
         // The header and footer we are creating
-        var head, foot;
         var txt = settings.level;
-        var level = txt.charAt(0);
         var bannerText = text[txt];
 
         // If no dynamic banner is desired and dynamic text is desired ... 
@@ -169,28 +168,10 @@
             bannerText = dText + ' ' + text[txt];
         }
 
-        switch(level) {
-        case 'T':
-            var tsColor = 'Yellow';
-            if (settings.tsOrange) {
-                tsColor = 'Orange'
-            }
-            head = $(divText).addClass('classBanner TopSecret-' + tsColor).html(bannerText);
-            foot = $(divText).addClass('classBanner TopSecret-' + tsColor).html(bannerText);
-            break;
-        case 'S':
-            head = $(divText).addClass('classBanner Secret').html(bannerText);
-            foot = $(divText).addClass('classBanner Secret').html(bannerText);
-            break;
-        case 'C':
-            head = $(divText).addClass('classBanner Conf').html(bannerText);
-            foot = $(divText).addClass('classBanner Conf').html(bannerText);
-            break;
-        case 'U':
-            head = $(divText).addClass('classBanner U-FOUO').html(bannerText);
-            foot = $(divText).addClass('classBanner U-FOUO').html(bannerText);
-            break;
-        }
+        // Set the banner classes for the classification level
+        var bannerClass = _getBannerClassForLevel(settings);
+        var head = $(divText).addClass(bannerClass).html(bannerText);
+        var foot = $(divText).addClass(bannerClass).html(bannerText);
 
         // Add header
         var $body = $('body');
@@ -203,6 +184,33 @@
 
         // Add footer
         $body.append(foot);
+
+    };
+
+    var _getBannerClassForLevel = function(settings) {
+
+        var bannerClass = 'classBanner';
+        if (!settings.colorBanners) {
+            return bannerClass;
+        }
+
+        var level = settings.level.charAt(0);
+        switch (level) {
+            case 'T':
+                bannerClass += ' TopSecret-' + (settings.tsOrange ? 'Orange' : 'Yellow');
+                break;
+            case 'S':
+                bannerClass += ' Secret';
+                break;
+            case 'C':
+                bannerClass += ' Conf';
+                break;
+            case 'U':
+                bannerClass += ' U-FOUO';
+                break;
+        }
+
+        return bannerClass;
 
     };
 
